@@ -150,6 +150,13 @@ while True:
       address = socket.gethostbyname(hostname)
       # Connect to the origin server
       # ~~~~ INSERT CODE ~~~~
+      originServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      originServerSocket.connect((address, 80))  # Connect to the origin server using the IP address and port 80 (HTTP)
+    
+      print ('Connected to origin Server')
+    except socket.error as err:
+      print ('Failed to connect to origin server:', err)
+      sys.exit()
       # ~~~~ END CODE INSERT ~~~~
       print ('Connected to origin Server')
 
