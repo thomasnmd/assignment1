@@ -55,6 +55,7 @@ while True:
   # Accept connection from client and store in the clientSocket
   try:
     # ~~~~ INSERT CODE ~~~~
+    clientSocket, clientAddress = serverSocket.accept()
     # ~~~~ END CODE INSERT ~~~~
     print ('Received a connection')
   except:
@@ -117,7 +118,14 @@ while True:
     # ProxyServer finds a cache hit
     # Send back response to client 
     # ~~~~ INSERT CODE ~~~~
+    try:
+       clientSocket.sendall('HTTP/1.1 200 OK\r\n'.encode())  # HTTP 200 OK response
+       for line in cacheData:
+           clientSocket.sendall(line.encode())  # Send the cached to the client
+    except socket.error:
+        print ('Failed to send cached data to client')
     # ~~~~ END CODE INSERT ~~~~
+    
     cacheFile.close()
     print ('Sent to the client:')
     print ('> ' + cacheData)
