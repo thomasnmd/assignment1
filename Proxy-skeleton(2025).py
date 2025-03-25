@@ -125,7 +125,7 @@ while True:
     except socket.error:
         print ('Failed to send cached data to client')
     # ~~~~ END CODE INSERT ~~~~
-    
+
     cacheFile.close()
     print ('Sent to the client:')
     print ('> ' + cacheData)
@@ -135,6 +135,13 @@ while True:
     # Create a socket to connect to origin server
     # and store in originServerSocket
     # ~~~~ INSERT CODE ~~~~
+    try:
+        originServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        originServerSocket.connect((hostname, 80))  # Connect to the origin server on port80
+        print('Connected to origin server')
+    except socket.error:
+        print('Failed to connect to origin server')
+        sys.exit()
     # ~~~~ END CODE INSERT ~~~~
 
     print ('Connecting to:\t\t' + hostname + '\n')
