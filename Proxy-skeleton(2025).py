@@ -167,6 +167,8 @@ while True:
       # originServerRequest is the first line in the request and
       # originServerRequestHeader is the second line in the request
       # ~~~~ INSERT CODE ~~~~
+      originServerRequest = f"{method} {resource} HTTP/1.1\r\n"   #Build HTTP request lines
+      originServerRequestHeader = f"Host: {hostname}\r\nConnection: close\r\n\r\n" #Build request header
       # ~~~~ END CODE INSERT ~~~~
 
       # Construct the request to send to the origin server
