@@ -27,6 +27,8 @@ except:
   print ('Failed to create socket')
   sys.exit()
 
+
+
 try:
   # Bind the the server socket to a host and port
   # ~~~~ INSERT CODE ~~~~
@@ -46,6 +48,8 @@ try:
 except:
   print ('Failed to listen')
   sys.exit()
+
+
 
 # continuously accept connections
 while True:
@@ -195,6 +199,22 @@ while True:
           if not data:
               break
           originServerResponse += data
+
+
+      header_end = originServerResponse.find(b"\r\n\r\n")  # HTTP header
+      if header_end != -1:
+          
+        try:
+            header_str = originServerResponse[:header_end].decode("utf-8", errors="ignore")
+            header_lines = header_str.split("\r\n")
+            if len(header_lines) > 0:
+                print("Received response from origin server:")
+                print(header_lines[0])  # Print the HTTP status line, HTTP/1.1 404 Not Found"
+        except Exception as e:
+          print(f"Failed to decode response header: {e}")
+      else:
+          print("Failed to find HTTP header end.")
+
       # ~~~~ END CODE INSERT ~~~~
 
       # Send the response to the client
