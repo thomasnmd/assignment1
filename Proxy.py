@@ -123,11 +123,10 @@ while True:
     # Send back response to client 
     # ~~~~ INSERT CODE ~~~~
     try:
-       clientSocket.sendall('HTTP/1.1 200 OK\r\n\r\n'.encode())  # HTTP 200 OK response
-       for line in cacheData:
-           clientSocket.sendall(line.encode())  # Send the cached to the client
+        for line in cacheData:
+            clientSocket.sendall(line.encode())  # 
     except socket.error:
-        print ('Failed to send cached data to client')
+        print('Failed to send cached data to client')
     # ~~~~ END CODE INSERT ~~~~
 
     cacheFile.close()
