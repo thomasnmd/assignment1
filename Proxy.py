@@ -138,7 +138,7 @@ while True:
     # and store in originServerSocket
     # ~~~~ INSERT CODE ~~~~
     try:
-        originServerSocket = socket.create_connection((hostname, 80))  # 直接创建并连接
+        originServerSocket = socket.create_connection((hostname, 80))  
     except (socket.gaierror, socket.error) as err:
         print(f'Failed to connect to origin server: {err}')
         sys.exit()
