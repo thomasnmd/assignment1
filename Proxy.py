@@ -138,12 +138,11 @@ while True:
     # and store in originServerSocket
     # ~~~~ INSERT CODE ~~~~
     try:
-        originServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        originServerSocket.connect((hostname, proxyPort))  # Connect to the origin server on port80
-        print('Connected to origin server')
-    except socket.error:
-        print('Failed to connect to origin server')
+        originServerSocket = socket.create_connection((hostname, 80))  # 直接创建并连接
+    except (socket.gaierror, socket.error) as err:
+        print(f'Failed to connect to origin server: {err}')
         sys.exit()
+
     # ~~~~ END CODE INSERT ~~~~
 
     print ('Connecting to:\t\t' + hostname + '\n')
@@ -152,13 +151,12 @@ while True:
       address = socket.gethostbyname(hostname)
       # Connect to the origin server
       # ~~~~ INSERT CODE ~~~~
-      originServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-      originServerSocket.connect((address, proxyPort))  # Connect to the origin server using the IP address and port (HTTP)
-    
-      print ('Connected to origin Server')
-    except socket.error as err:
-      print ('Failed to connect to origin server:', err)
-      sys.exit()
+      try:
+          originServerSocket = socket.create_connection((address, 80))  
+      except socket.error as err:
+          print('Failed to connect to origin server:', err)
+          sys.exit()
+
       # ~~~~ END CODE INSERT ~~~~
       print ('Connected to origin Server')
 
@@ -170,8 +168,7 @@ while True:
       # originServerRequestHeader is the second line in the request
       # ~~~~ INSERT CODE ~~~~
       originServerRequest = f"GET {resource} HTTP/1.1"   #Build HTTP request lines
-      originServerRequestHeader = f"Host: {hostname}"
-      #Build request header
+      originServerRequestHeader = f"Host: {hostname}" #Build request header
       # ~~~~ END CODE INSERT ~~~~
 
       # Construct the request to send to the origin server
