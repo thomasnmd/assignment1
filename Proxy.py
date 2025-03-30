@@ -27,8 +27,6 @@ except:
   print ('Failed to create socket')
   sys.exit()
 
-
-
 try:
   # Bind the the server socket to a host and port
   # ~~~~ INSERT CODE ~~~~
@@ -124,7 +122,8 @@ while True:
     # ~~~~ INSERT CODE ~~~~
     try:
         for line in cacheData:
-            clientSocket.sendall(line.encode())  # 
+            clientSocket.sendall(line.encode('utf-8'))
+            print(f"Sent to client: {line}")  # 
     except socket.error:
         print('Failed to send cached data to client')
     # ~~~~ END CODE INSERT ~~~~
@@ -140,7 +139,7 @@ while True:
     # ~~~~ INSERT CODE ~~~~
     try:
         originServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        originServerSocket.connect((hostname, 80))  # Connect to the origin server on port80
+        originServerSocket.connect((hostname, proxyPort))  # Connect to the origin server on port80
         print('Connected to origin server')
     except socket.error:
         print('Failed to connect to origin server')
@@ -154,7 +153,7 @@ while True:
       # Connect to the origin server
       # ~~~~ INSERT CODE ~~~~
       originServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-      originServerSocket.connect((address, 80))  # Connect to the origin server using the IP address and port 80 (HTTP)
+      originServerSocket.connect((address, proxyPort))  # Connect to the origin server using the IP address and port (HTTP)
     
       print ('Connected to origin Server')
     except socket.error as err:
@@ -170,8 +169,9 @@ while True:
       # originServerRequest is the first line in the request and
       # originServerRequestHeader is the second line in the request
       # ~~~~ INSERT CODE ~~~~
-      originServerRequest = f"{method} {resource} HTTP/1.1\r\n"   #Build HTTP request lines
-      originServerRequestHeader = f"Host: {hostname}\r\nConnection: close\r\n\r\n" #Build request header
+      originServerRequest = f"GET {resource} HTTP/1.1"   #Build HTTP request lines
+      originServerRequestHeader = f"Host: {hostname}"
+      #Build request header
       # ~~~~ END CODE INSERT ~~~~
 
       # Construct the request to send to the origin server
@@ -194,26 +194,14 @@ while True:
       # ~~~~ INSERT CODE ~~~~
       originServerResponse = b""
       while True:
-          data = originServerSocket.recv(BUFFER_SIZE)
-          if not data:
-              break
-          originServerResponse += data
-
-
-      header_end = originServerResponse.find(b"\r\n\r\n")  # HTTP header
-      if header_end != -1:
-          
-        try:
-            header_str = originServerResponse[:header_end].decode("utf-8", errors="ignore")
-            header_lines = header_str.split("\r\n")
-            if len(header_lines) > 0:
-                print("Received response from origin server:")
-                print(header_lines[0])  # Print the HTTP status line, HTTP/1.1 404 Not Found"
-        except Exception as e:
-          print(f"Failed to decode response header: {e}")
-      else:
-          print("Failed to find HTTP header end.")
-
+          try:
+              data = originServerSocket.recv(BUFFER_SIZE)
+              if not data:
+                  break
+              originServerResponse += data
+          except socket.error:
+              print("Failed to receive data from origin server")
+              break    
       # ~~~~ END CODE INSERT ~~~~
 
       # Send the response to the client
