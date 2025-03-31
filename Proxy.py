@@ -138,7 +138,7 @@ while True:
     # and store in originServerSocket
     # ~~~~ INSERT CODE ~~~~
     try:
-        originServerSocket = socket.create_connection((hostname, 80))  
+        originServerSocket = socket.create_connection((hostname, proxyPort))  
     except (socket.gaierror, socket.error) as err:
         print(f'Failed to connect to origin server: {err}')
         sys.exit()
@@ -152,7 +152,7 @@ while True:
       # Connect to the origin server
       # ~~~~ INSERT CODE ~~~~
       try:
-          originServerSocket = socket.create_connection((address, 80))  
+          originServerSocket = socket.create_connection((address, proxyPort))  
       except socket.error as err:
           print('Failed to connect to origin server:', err)
           sys.exit()
